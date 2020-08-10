@@ -77,9 +77,9 @@ Exiting a leveraged position applies the profits, losses, and fees from the leve
 
 === Transaction Format ===
 
-The transaction formats to enter and exit from leveraged positions draw up on the existing transaction format in PegNet 2.0.
+The transaction datastructures format to enter and exit from leveraged positions are differentiated from the existing transaction/conversion datastructure format in PegNet using a new object under the root key "position". See "1:1 Position To Entryhash Relationship" in the Rationale section for more details.
 
-==== Position Entry Format ====
+==== Position Entry Transaction Format ====
 <pre>
 {
   "version": 1,
@@ -108,7 +108,7 @@ The transaction formats to enter and exit from leveraged positions draw up on th
 |-
 | position
 | object
-| The object containing the required information for placing a position
+| The object containing the required information for placing a position. The key "position" and the key "transactions" may not coexist in the same entry.
 | 
 | Y
 |-
@@ -143,7 +143,7 @@ For a position entry transaction to be valid, the following criteria must be met
 #The input address <code>position.address</code> must own <code>position.amount</code> of the pAsset <code>position.type</code> in the current block after any conversions or transfers are applied
 
 
-==== Position Exit Format ====
+==== Position Exit Transaction Format ====
 <pre>
 {
   "version": 1,
@@ -169,7 +169,7 @@ For a position entry transaction to be valid, the following criteria must be met
 |-
 | position
 | object
-| The object containing the required information for placing a position
+| The object containing the required information for placing a position. The key "position" and the key "transactions" may not coexist in the same entry.
 | 
 | Y
 |-
@@ -198,4 +198,4 @@ Instead of using the existing transaction batch format, this PIP proposes a new 
 
 ==Reference implementation== 
 
-Implementation in progress, TBD
+Implementation in progress, TBD. Preliminary activation height on the Factom Mainnet is 

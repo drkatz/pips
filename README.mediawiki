@@ -49,6 +49,13 @@ It should be known without consensus from the miners and users of the protocol, 
 | David Johnston, Steven Masley
 | Standard
 | Draft
+|-
+| [[pip-0017.mediawiki|17]]
+| Consensus (hard fork)
+| Leveraged Positions
+| Devon Katz
+| Standard
+| Draft
 
 
 |}

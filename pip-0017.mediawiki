@@ -81,7 +81,6 @@ The transaction formats to enter and exit from leveraged positions draw up on th
 
 ==== Position Entry Format ====
 <pre>
-<code>
 {
   "version": 1,
   "position": {
@@ -91,7 +90,6 @@ The transaction formats to enter and exit from leveraged positions draw up on th
     "leverage": 2
   }
 }
-</code>
 </pre>
 
 {| class="wikitable" 
@@ -105,7 +103,7 @@ The transaction formats to enter and exit from leveraged positions draw up on th
 | version
 | number
 | The protocol version
-| 
+| Must be set to <code>1</code>
 | Y
 |-
 | position
@@ -147,14 +145,12 @@ For a position entry transaction to be valid, the following criteria must be met
 
 ==== Position Exit Format ====
 <pre>
-<code>
 {
   "version": 1,
   "position": {
     "close": "66f9bef30e10c867e09d0927f01660cca34d0bc0df859cd73f4acae167ae8fca"
   }
 }
-</code>
 </pre>
 
 {| class="wikitable" 
@@ -168,7 +164,7 @@ For a position entry transaction to be valid, the following criteria must be met
 | version
 | number
 | The protocol version
-| 
+| Must be set to <code>1</code>
 | Y
 |-
 | position

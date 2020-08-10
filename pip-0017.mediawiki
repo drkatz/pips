@@ -22,7 +22,7 @@ Taking a leveraged position in PegNet is similar to any other conversion in PegN
 
 ==Motivation==
 
-As a DeFi asset conversion network that mints it’s own tokens used for arbitrage, PegNet is in a unique position to provide leveraged positions to market participants without requiring 3rd parties, counterparties or lending fees. Traditional approaches to leverage vary by market, but all require some combination of borrowing other people's money to leverage position size or sell their assets, a counterparty, and managers maintaining a position for a fee.
+As a DeFi asset conversion network that mints it’s own tokens, PegNet is in a unique position to provide leveraged positions to market participants without requiring 3rd parties, counterparties or lending fees. Traditional approaches to leverage vary by market, but all require some combination of borrowing other people's money to leverage position size or sell their assets, a counterparty, and managers maintaining a position for a fee.
 
 As it exists today, margin trading cryptocurrency and other assets carries regulatory burden, counterparty risk, and a variety of fees. These burdens gravitate around centralized parties, such as exchanges, as they represent central points of failure. They are responsible for paying out profits and taking losses from traders, for maintaining custody of funds, from protecting positions from a variety of attack vectors, and for keeping up with regulatory oversight of their customers without leaking customer data. All of these duties increase risks, fees, and regulatory burdens. PegNet is uniquely suited to solve each of these problems.
 

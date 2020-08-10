@@ -48,7 +48,7 @@ The fee for each open position will be $0.001 USD per-block, which is deducted o
 
 <code>
 (EQUATION PLACEHOLDER)
-<code>
+</code>
 
 For example, for a leveraged position in pXBT, if the current USD/XBT price is 11,668 USD/XBT as determined by OPR for the block, the fee calculated for the position for the block would be 9 satoshi.
 
@@ -80,6 +80,7 @@ Exiting a leveraged position applies the profits, losses, and fees from the leve
 The transaction formats to enter and exit from leveraged positions draw up on the existing transaction format in PegNet 2.0.
 
 ==== Position Entry Format ====
+<pre>
 <code>
 {
   "version": 1,
@@ -91,6 +92,7 @@ The transaction formats to enter and exit from leveraged positions draw up on th
   }
 }
 </code>
+</pre>
 
 {| class="wikitable" 
 |- style="font-weight:bold;"
@@ -144,6 +146,7 @@ For a position entry transaction to be valid, the following criteria must be met
 
 
 ==== Position Exit Format ====
+<pre>
 <code>
 {
   "version": 1,
@@ -152,6 +155,7 @@ For a position entry transaction to be valid, the following criteria must be met
   }
 }
 </code>
+</pre>
 
 {| class="wikitable" 
 |- style="font-weight:bold;"
@@ -183,7 +187,7 @@ For a position entry transaction to be valid, the following criteria must be met
 For a position exit transaction to be valid, the following criteria must be met:
 #The entryhash in the <code>position.close</code> field must correspond to a position
 #The position corresponding to <code>position.close</code> field must still be open, and must not have been liquidated in a previous block
-#The open position's source input address(<code>position.address</code> in the Position Entry entry) must have validly signed the position exit entry via FAT-103
+#The open position's source input address(<code>position.address</code> in the Position Entry) must have validly signed the position exit entry via FAT-103
 
 ==Rationale==
 

@@ -46,8 +46,9 @@ To help protect PegNet from a denial of service attack, a flat fee structure is 
 
 The fee for each open position will be $0.001 USD per-block, which is deducted on an ongoing basis from the collateral of the position until it is either manually closed or automatically liquidated. The USD fee amount to deduct from the open position is calculated based on the OPR derived rate for the block of the placement asset. Fees collected are burnt from the protocol entirely.
 
+To calculate the per-block fee for an open position:
 <code>
-(EQUATION PLACEHOLDER)
+Block Fee = 0.001 ÷ Block OPR Price
 </code>
 
 For example, for a leveraged position in pXBT, if the current USD/XBT price is 11,668 USD/XBT as determined by OPR for the block, the fee calculated for the position for the block would be 9 satoshi.
@@ -63,18 +64,22 @@ Exiting a leveraged position applies the profits, losses, and fees from the leve
 
 === Determining Liquidation Status ===
 Each block the daemon will determine the liquidation status of each open position based on:
-#The collateral amount
-#The placement price
-#The placement block
-#The leverage
-#The current price
-#The current block
-#Total fees
+*The collateral amount
+*The entry OPR price
+*The leverage
+*The current OPR price
+*Cumulative fees
 
 Liquidation of a position occurs when the unrealized losses, including fees of the trade, become greater than or equal to the total collateral amount. Until those conditions are met, the trade may be manually exited by the user at any time.
 
+For a long trade, the profit is calculated as:
 <code>
-(EQUATION PLACEHOLDER)
+Profit = ((Collateral × Leverage × Current OPR Price ÷ Entry OPR Price) - (Collateral × Leverage)) - Cumulative Fees
+</code>
+
+For a short trade, the profit is calculated as:
+<code>
+Profit = ((Collateral × Leverage) - (Margin × Leverage × Current OPR Price ÷ Entry OPR Price)) - Cumulative Fees
 </code>
 
 === Transaction Format ===

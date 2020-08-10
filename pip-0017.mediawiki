@@ -52,6 +52,13 @@ The fee for each open position will be $0.001 USD per-block, which is deducted o
 
 For example, for a leveraged position in pXBT, if the current USD/XBT price is 11,668 USD/XBT as determined by OPR for the block, the fee calculated for the position for the block would be 9 satoshi.
 
+=== Entering & Exiting A Leveraged Position ===
+To enter a leveraged position, a user first holds an amount of the target asset they wish to short or long against the target asset's USD price. To enter into the position, they create and submit a signed transaction entry using their address with the details of the position they wish to enter, including the pAsset type, collateral amount, leverage multiplier, and direction.
+
+Once the transaction is submitted and picked up by the daemon, the collateral is deducted from their address in the target pAsset and removed from circulation until the trade is exited. The user may exit the position at any time before a liquidation event occurs to realize their profits or losses.
+
+Exiting a leveraged position applies the profits, losses, and fees from the leveraged position to the collateral and closes the position. If the position was a partial or complete loss, the collateral is burnt away. If the position was profitable, the profits are tabulated and minted back to the creator of the position.
+
 === Determining Liquidation Status ===
 Each block the daemon will determine the liquidation status of each open position based on:
 #The collateral amount
@@ -67,13 +74,6 @@ Liquidation of a position occurs when the unrealized losses, including fees of t
 <code>
 (EQUATION PLACEHOLDER)
 </code>
-
-=== Entering & Exiting A Leveraged Position ===
-To enter a leveraged position, a user first holds an amount of the target asset they wish to short or long against the target asset's USD price. To enter into the position, they create and submit a signed transaction entry using their address with the details of the position they wish to enter, including the pAsset type, collateral amount, leverage multiplier, and direction.
-
-Once the transaction is submitted and picked up by the daemon, the collateral is deducted from their address in the target pAsset and removed from circulation until the trade is exited. The user may exit the position at any time before a liquidation event occurs to realize their profits or losses.
-
-Exiting a leveraged position applies the profits, losses, and fees from the leveraged position to the collateral and closes the position. If the position was a partial or complete loss, the collateral is burnt away. If the position was profitable, the profits are tabulated and minted back to the creator of the position.
 
 === Transaction Format ===
 

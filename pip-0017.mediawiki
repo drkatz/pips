@@ -52,6 +52,8 @@ The fee for each open position will be $0.001 USD per-block, which is deducted o
 
 For example, for a leveraged position in pXBT, if the current USD/XBT price is 11,668 USD/XBT as determined by OPR for the block, the fee calculated for the position for the block would be 9 satoshi.
 
+With a $0.001 fee per block, this makes borrowing margin cheaper on Pegnet than on Kraken which has a 0.01% per 4 hour margin fee, for example, at the point you are borrowing $250 or more. At that point the fee on Pegnet is cheaper for margin borrowing, and this isnt including the trading fees themselves or margin open fee on kraken, only ongoing margin rollover costs.
+
 === Entering & Exiting A Leveraged Position ===
 To enter a leveraged position, a user first holds an amount of the target asset they wish to short or long against the target asset's USD price. To enter into the position, they create and submit a signed transaction entry using their address with the details of the position they wish to enter, including the pAsset type, collateral amount, leverage multiplier, and direction.
 

@@ -1,0 +1,205 @@
+
+<pre>
+  PIP: 17
+  Title: Leveraged Positions
+  Layer: Consensus (hard fork)
+  Author: Devon Katz <devonk@dbgrow.com>
+  Comments-Summary: No comments yet.
+  Comments-URI: https://github.com/pegnet/pips/wiki/Comments:PIP-0017
+  Status: Draft
+  Type: Standards Track
+  Created: 2020-08-08
+  License: BSD-2-Clause
+</pre>
+
+==Abstract==
+
+This PIP details a design to achieve leveraged positions within PegNet, based on the proposed "Burn and Mint" mechanism and a flat fee structure. The design detailed in this PIP enables "short" and "long" positions to be made using a user's pAssets with a selectable leverage multiplier.
+
+A leveraged position is entered into by locking pAssets as collateral, defining a leverage multiplier and position direction, and opening the position. By doing so there is now a set liquidation price, whereby if the asset goes against the traders position by a certain amount, less fees, the collateral is burned in a liquidation event. If not liquidated, upon a decision to close the position by the trader, a profit or loss is determined and for a loss that portion of collateral is burned, and for a gain the protocol mints that amount of additional tokens to reward the trade in the same way that current conversions function within the protocol.
+
+Taking a leveraged position in PegNet is similar to any other conversion in PegNet, but the rate at which a trader loses or gains on that position has leverage applied to it. If the leveraged position is profitable, the protocol mints the profit back to the position holder upon closing just as if the user engaged in and exited a traditional long margin trade, only the profit comes from the protocol rather than a counterparty. Conversely, if the leveraged position holder’s position is losing, the protocol burns through the collateral in the trade at a faster rate, and depending on the final design for leverage within PegNet, can burn the entire collateral when a liquidation price is hit.
+
+==Motivation==
+
+As a DeFi asset conversion network that mints it’s own tokens used for arbitrage, PegNet is in a unique position to provide leveraged positions to market participants without requiring 3rd parties, counterparties or lending fees. Traditional approaches to leverage vary by market, but all require some combination of borrowing other people's money to leverage position size or sell their assets, a counterparty, and managers maintaining a position for a fee.
+
+As it exists today, margin trading cryptocurrency and other assets carries regulatory burden, counterparty risk, and a variety of fees. These burdens gravitate around centralized parties, such as exchanges, as they represent central points of failure. They are responsible for paying out profits and taking losses from traders, for maintaining custody of funds, from protecting positions from a variety of attack vectors, and for keeping up with regulatory oversight of their customers without leaking customer data. All of these duties increase risks, fees, and regulatory burdens. PegNet is uniquely suited to solve each of these problems.
+
+
+==Specification==
+
+=== USD Denomination ===
+The leveraged positions described in this PIP are exclusively denominated in terms of USD. For example, a leveraged position based on pXBT leverages price movements of USD/pXBT as determined by the Oracle Price Record derived rate.
+
+=== Enabled Pegged Assets ===
+Only certain large-cap pAssets are enabled for leveraged positions:
+*pXBT
+*pETH
+
+(More TBD)
+
+=== Fee Structure & Calculation ===
+Unlike a normal conversion or transfer, an open leveraged position carries an ongoing computational cost to each daemon due to the requirement of perform position maintainance tasks such as calculating the unrealized profits & losses and liquidation status for each open position.
+
+To help protect PegNet from a denial of service attack, a flat fee structure is applied to leveraged positions each block, for the duration of the position, with the exception of the placement block. 
+
+The fee for each open position will be $0.001 USD per-block, which is deducted on an ongoing basis from the collateral of the position until it is either manually closed or automatically liquidated. The USD fee amount to deduct from the open position is calculated based on the OPR derived rate for the block of the placement asset. Fees collected are burnt from the protocol entirely.
+
+<code>
+(EQUATION PLACEHOLDER)
+</code>
+
+For example, for a leveraged position in pXBT, if the current USD/XBT price is 11,668 USD/XBT as determined by OPR for the block, the fee calculated for the position for the block would be 9 satoshi.
+
+=== Determining Liquidation Status ===
+Each block the daemon will determine the liquidation status of each open position based on:
+#The collateral amount
+#The placement price
+#The placement block
+#The leverage
+#The current price
+#The current block
+#Total fees
+
+Liquidation of a position occurs when the unrealized losses, including fees of the trade, become greater than or equal to the total collateral amount. Until those conditions are met, the trade may be manually exited by the user at any time.
+
+<code>
+(EQUATION PLACEHOLDER)
+</code>
+
+=== Entering & Exiting A Leveraged Position ===
+To enter a leveraged position, a user first holds an amount of the target asset they wish to short or long against the target asset's USD price. To enter into the position, they create and submit a signed transaction entry using their address with the details of the position they wish to enter, including the pAsset type, collateral amount, leverage multiplier, and direction.
+
+Once the transaction is submitted and picked up by the daemon, the collateral is deducted from their address in the target pAsset and removed from circulation until the trade is exited. The user may exit the position at any time before a liquidation event occurs to realize their profits or losses.
+
+Exiting a leveraged position applies the profits, losses, and fees from the leveraged position to the collateral and closes the position. If the position was a partial or complete loss, the collateral is burnt away. If the position was profitable, the profits are tabulated and minted back to the creator of the position.
+
+=== Transaction Format ===
+
+The transaction formats to enter and exit from leveraged positions draw up on the existing transaction format in PegNet 2.0.
+
+==== Position Entry Format ====
+<pre>
+<code>
+{
+  "version": 1,
+  "position": {
+    "address": "FA2xwG47oyWCefAHfYg8r87mWr9JLUXpdZ7PeE8rXEb9xtDvdxbQ",
+    "amount": 1000000000,
+    "type": "pXBT"
+    "leverage": 2
+  }
+}
+</code>
+</pre>
+
+{| class="wikitable" 
+|- style="font-weight:bold;"
+! Field
+! Type
+! Description
+! Validation
+! style="font-weight:normal;" | Required
+|-
+| version
+| number
+| The protocol version
+| 
+| Y
+|-
+| position
+| object
+| The object containing the required information for placing a position
+| 
+| Y
+|-
+| position.address
+| string
+| The input address to the leveraged position
+| Follows existing validation and FAT-103 signing standard where address is the 0th input
+| Y
+|-
+| position.amount
+| number
+| The amount of collateral placed into the leveraged trade
+| Must be a positive whole number greater than or equal to the per-block open position fee calculated via the OPR of the placement block
+| Y
+|-
+| position.type
+| string
+| The desired pAsset symbol used in entering a leveraged position
+| Must be a valid pAsset symbol. Must be a pAsset enabled for leveraged positions in the current block
+| Y
+|-
+| position.leverage
+| number
+| The desired leverage for the position, where a negative number represents a short position and a positive position represents a long
+| Must be a whole number on the range from -10 to 10 inclusive, excluding zero.
+| Y
+|}
+
+For a position entry transaction to be valid, the following criteria must be met:
+#All field level validation criteria featured in the above table must be met
+#The input address <code>position.address</code> must have properly signed the entry and the signature must be valid via FAT-103
+#The input address <code>position.address</code> must own <code>position.amount</code> of the pAsset <code>position.type</code> in the current block after any conversions or transfers are applied
+
+
+==== Position Exit Format ====
+<pre>
+<code>
+{
+  "version": 1,
+  "position": {
+    "close": "66f9bef30e10c867e09d0927f01660cca34d0bc0df859cd73f4acae167ae8fca"
+  }
+}
+</code>
+</pre>
+
+{| class="wikitable" 
+|- style="font-weight:bold;"
+! Field
+! Type
+! Description
+! Validation
+! Required
+|-
+| version
+| number
+| The protocol version
+| 
+| Y
+|-
+| position
+| object
+| The object containing the required information for placing a position
+| 
+| Y
+|-
+| position.close
+| string
+| The entryhash of the position to exit from
+| Must be a valid entryhash
+| Y
+|}
+
+For a position exit transaction to be valid, the following criteria must be met:
+#The entryhash in the <code>position.close</code> field must correspond to a position
+#The position corresponding to <code>position.close</code> field must still be open, and must not have been liquidated in a previous block
+#The open position's source input address(<code>position.address</code> in the Position Entry) must have validly signed the position exit entry via FAT-103
+
+==Rationale==
+
+=== Fees ===
+Fees are included as a mechanism to help prevent potential purposeful or accidental abuse of the system by placing large numbers of small positions that may be opened indeterminately, causing a poor cost-benefit scaling for each additional small position. Programmatic trading bots made for traditional exchanges typically place large numbers of small orders. Since fees are flat and fixed, it is optimal to create a smaller number of larger positions.
+
+=== Fee Burning ===
+Burning of fees is included as a mechanism in leveraged positions to help conterbalance inflation created by successful positions, which mint back profits to the position creator at the protocol level. This also creates an incentive to open lower numbers of larger positions instead of many small ones to minimize fees.
+
+=== 1:1 Position To Entryhash Relationship ===
+Instead of using the existing transaction batch format, this PIP proposes a new key "position" be created under the JSON root of each transaction entry. The purpose of this is to force a 1:1 relationship between opening a position and the resulting entryhash while not interfering with the existing validation of conversions and transfers. This allows positions to be identified uniquely, be checked on, and be cancelled in a succinct way using their entryhash.
+
+==Reference implementation== 
+
+Implementation in progress, TBD

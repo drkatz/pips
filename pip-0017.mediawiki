@@ -200,4 +200,4 @@ Instead of using the existing transaction batch format, this PIP proposes a new 
 
 ==Reference implementation== 
 
-Implementation in progress, TBD. Preliminary activation height on the Factom Mainnet is 
+Implementation in progress, TBD. Preliminary activation height on the Factom Mainnet is 270491, approximately November 10th 2020. 
